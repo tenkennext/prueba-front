@@ -14,9 +14,46 @@ const bcrypt = require('bcrypt');
 const Joi = require('@hapi/joi');
 
 const schemaRegister = Joi.object({
-    name: Joi.string().min(6).max(255).required(),
-    email: Joi.string().min(6).max(255).required().email(),
-    password: Joi.string().min(6).max(1024).required()
+    name: Joi.string().min(6).max(255).required().error(errors=>{ 
+            errors.forEach(err=>{  
+            switch(err.code){
+                case "string.empty":
+                err.message='Insertar nombre'
+                break
+                case "string.min":
+                err.message='No puede crear un nombre menor de 6 letras'
+                break
+               }
+             })
+            return errors
+        }),    
+    email: Joi.string().min(6).max(255).required().email().error(errors=>{ 
+        errors.forEach(err=>{  
+        switch(err.code){
+            case "string.empty":
+            err.message='Insertar email'
+            break
+            case "string.min":
+            err.message='No puede crear un email menor de 6 letras'
+            break
+           }
+         })
+        return errors
+    }),
+    password: Joi.string().min(6).max(1024).required().error(errors=>{ 
+        errors.forEach(err=>{  
+        switch(err.code){
+            case "string.empty":
+            err.message='Insertar password'
+            break
+            case "string.min":
+            err.message='No puede crear un passsword menor de 6 letras'
+            break
+           }
+         })
+        return errors
+    }),
+    role: Joi.string().required()
 })
 
 const schemaLogin = Joi.object({
@@ -48,7 +85,8 @@ router.post('/register', async (req, res) => {
    const user = new User({
        name: req.body.name,
        email: req.body.email,
-       password: password
+       password: password,
+       role: req.body.role
    });
    try {
        const savedUser = await user.save();
@@ -71,7 +109,7 @@ router.post('/login', async (req, res) => {
   if (!user) return res.status(400).json({ error: 'Usuario no encontrado' });
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  //if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
+  if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
 
   // create token
   const token = jwt.sign({

@@ -5,7 +5,7 @@
         <div class="ui section divider"></div>
         <h2 is="sui-header" icon text-align="center">
           <sui-icon name="podcast" circular />
-          <sui-header-content>Crear Conferencia</sui-header-content>
+          Crear Conferencia
         </h2>
 
         <sui-form @submit.prevent="sendConference">
@@ -18,9 +18,17 @@
             <input type="number" v-model="conference.quota" />
           </sui-form-field>
           <sui-form-field>
+            <label>Fecha de conferencia:</label>
+            <input type="date" v-model="conference.date" />
+          </sui-form-field>
+          <sui-form-field>
+            <label>Localización:</label>
+            <input type="text" v-model="conference.location" />
+          </sui-form-field>
+          <sui-form-field>
             <label>Descripcion:</label>
             <textarea v-model="conference.description"  placeholder="Descripcion de la Conferencia" rows="2"></textarea>
-          </sui-form-field>
+          </sui-form-field> 
           <!-- @click="sendConference()"-->
           <sui-button>Crear</sui-button>
         </sui-form>
@@ -32,18 +40,14 @@
             <div class="" v-if="conference.state === true">
             <sui-card>
               <sui-card-content>
-                  <!--sui-item-image src="static/images/wireframes/image.png" /*-->
                   <sui-item-content>
                     <sui-item-header>{{conference.title}}</sui-item-header>
                     <sui-item-description>{{conference.description}}.</sui-item-description>
+                    <div class="ui divider"></div>
                     <sui-item-extra>
-                      Capacidad: {{conference.quota}}<br>
-                      <span>Conferencia # {{ idx+1 }}</span>
+                      <span>Conferencia # {{ idx+1 }}</span> - Capacidad: <b>{{conference.quota}}</b><br>
+                      Fecha: <b>{{format_date(conference.date)}}</b><br>
                     </sui-item-extra>
-                    <!--button @click="deleteTask(task._id)" class="btn btn-danger">Delete</button>
-                        <button @click="editTask(task._id)" class="btn btn-secondary">
-                          Edit
-                        </button-->
                   </sui-item-content>
                   <sui-card-content extra>
                     <span slot="right">
@@ -53,7 +57,6 @@
                         shape="circular"
                         size="mini"
                       />
-                      
                     </span>
                   </sui-card-content>
               </sui-card-content>
@@ -70,10 +73,12 @@
 <script>
 
 class Conference {
-  constructor(title = '', description = '', quota = '') {
+  constructor(title = '', description = '', location = '', date = '', quota = '') {
     this.title = title;
-    this.quota = quota;
     this.description = description;
+    this.location = location;
+    this.date = date;
+    this.quota = quota;
   }
 }
 
@@ -83,7 +88,6 @@ export default {
     return {
       conference: new Conference(),
       conferences: [],
-      edit: false,
       conferenceToEdit: ''
     }
   },
@@ -92,7 +96,6 @@ export default {
   },
   methods: {
     sendConference() {
-      if(this.edit === false) {
         fetch('http://localhost:3001/api/conference/add', {
           method: 'POST',
           mode: 'cors',
@@ -109,23 +112,6 @@ export default {
             this.getConferences();
             this.conference = new Conference();
           });
-      }
-      else {
-        fetch('/api/conference/add/' + this.conferenceToEdit, {
-          method: 'PUT',
-          body: JSON.stringify(this.conference),
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
-        })
-          .then(res => res.json())
-          .then(data => {
-            //this.getTasks();
-            this.conference = new Conference();
-            this.edit = !this.edit;
-          });
-      }
     },
     getConferences() {
       fetch('http://localhost:3001/api/conferences/list',{
@@ -142,6 +128,11 @@ export default {
           this.conferences = res;          
           console.log(this.conferences);
         });
+    },
+    format_date(value){
+        if (value) {
+          return new Date(value).toLocaleDateString();
+        }
     },
   
   }

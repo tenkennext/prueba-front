@@ -4,7 +4,7 @@
       <div class="ui section divider"></div>
       <h2 is="sui-header" icon text-align="center">
         <sui-icon name="user circle" circular />
-        <sui-header-content>Registrar</sui-header-content>
+        Registrarse en el sistema
       </h2>
     </sui-container>
     <div class="ui hidden divider"></div>
@@ -22,9 +22,6 @@
           <sui-message v-if="submitted && errors.has('name')">
             <sui-message-header>{{errors.first('name')}}</sui-message-header>
           </sui-message>
-          <div v-if="submitted && errors.has('name')"
-                class="alert-danger"
-            >{{errors.first('name')}}</div>
         </sui-form-field>
         <sui-form-field>
           <label>Correo eléctronico:</label>
@@ -47,21 +44,38 @@
               <sui-message-header>{{errors.first('password')}}</sui-message-header>
             </sui-message>
         </sui-form-field>
+        <sui-form-field>
+          <label>Role:</label>
+          <sui-form-field>
+            <sui-dropdown
+              placeholder="Role"
+              selection
+              :options="roles"
+              v-model="user.role"
+            />
+          </sui-form-field>
+        </sui-form-field>
         <!-- @click="sendConference()"-->
         <sui-button>Crear</sui-button>
-        <div
-          v-if="message"
-          class="alert"
-          :class="successful ? 'alert-success' : 'alert-danger'"
-        >{{message}}</div>
+        <sui-message v-if="message" :class="successful ? 'success' : 'danger'">
+              <sui-message-header>{{message}}</sui-message-header>
+        </sui-message>
       </div>
+
+      <sui-message v-if="message && successful">
+        <sui-message-header>{{message}}</sui-message-header>
+        <sui-message-list>
+          <sui-message-item>
+            Su rol es de tipo <b>{{type}}</b>
+          </sui-message-item>
+          <sui-message-item>
+            Comienze sesion para <router-link to="/home">ingresar</router-link>
+          </sui-message-item>
+        </sui-message-list>
+      </sui-message>
     </sui-form>
   </sui-container>
 
-
-
-
-  
 
 </template>
 
@@ -73,10 +87,15 @@ export default {
   name: 'Register',
   data() {
     return {
-      user: new User('', '', ''),
+      user: new User('', '', '', 'attendant'),
       submitted: false,
       successful: false,
-      message: ''
+      message: '',
+      type: '',
+      roles: [
+         { text: 'Asistente', value: 'attendant', icon: 'deaf' },
+         { text: 'Conferencista', value: 'speaker', icon: 'rss' },
+      ],
     };
   },
   /*computed: {
@@ -106,6 +125,8 @@ export default {
             this.message = userDB.error;
             this.successful = false;
         }else{
+            this.message = userDB.data.name + 'Usted se ha registrado correctamente!';
+            this.type = userDB.data.role;
             this.successful = true;
         }
       } catch (error) {

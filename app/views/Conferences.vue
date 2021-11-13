@@ -17,12 +17,16 @@
 
               <sui-card-content>
                 <div class="" v-if="conference.state === true">
-                  <sui-card-header>{{conference.title}}</sui-card-header>
-                  <sui-card-meta>Conferencia # {{ idx+1 }}</sui-card-meta>
-                  Capacidad: {{conference.quota}}
-                  <sui-card-description>
-                    {{conference.description}}.
-                  </sui-card-description>
+                  <sui-item-content>
+                    <sui-item-header>{{conference.title}}</sui-item-header>
+                    <sui-item-description>{{conference.description}}.</sui-item-description>
+                    <div class="ui divider"></div>
+                    <sui-item-extra>
+                      <span>Conferencia # {{ idx+1 }}</span> - Capacidad: <b>{{conference.quota}}</b><br>
+                      Fecha: <b>{{format_date(conference.date)}}</b><br>
+                    </sui-item-extra>
+                  </sui-item-content>
+        
                   <sui-card-content extra>
                       <span slot="right">
                         <small><b>Speaker:</b></small> <!--{{ conference.quota}}-->
@@ -62,10 +66,12 @@
 <script>
 
 class Conference {
-  constructor(title = '', description = '', quota = '') {
+  constructor(title = '', description = '', location = '', date = '', quota = '') {
     this.title = title;
-    this.quota = quota;
     this.description = description;
+    this.location = location;
+    this.date = date;
+    this.quota = quota;
   }
 }
 
@@ -117,6 +123,11 @@ export default {
         .then(data => {
           this.getConferences();
         });
+    },
+    format_date(value){
+        if (value) {
+          return new Date(value).toLocaleDateString();
+        }
     }
   }
 };

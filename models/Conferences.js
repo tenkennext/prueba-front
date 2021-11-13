@@ -4,6 +4,11 @@ const { Schema } = mongoose;
 const Conference = new Schema({
   title: String,
   description: String,
+  location: String,
+  date: {
+      type: Date,
+      default: Date.now
+  },
   quota: Number,
   state: {
       type: Boolean,

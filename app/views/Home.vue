@@ -3,8 +3,8 @@
     <sui-container>
       <div class="ui section divider"></div>
       <h2 is="sui-header" icon text-align="center">
-        <sui-icon name="user circle" circular />
-        <sui-header-content>Empezar</sui-header-content>
+        <sui-icon name="power off" circular />
+        Empezar iniciando sesion
       </h2>
     </sui-container>
     <div class="ui hidden divider"></div>
@@ -39,7 +39,14 @@
         >{{message}}</div>
       </div>
     </sui-form>
-
+    <sui-message>
+      <sui-message-header>Nuevo?</sui-message-header>
+      <sui-message-list>
+        <sui-message-item>
+          Registarse para ingresar  <router-link to="/register">aquí</router-link>
+        </sui-message-item>
+      </sui-message-list>
+    </sui-message>
   </sui-container>
 </template>
 
