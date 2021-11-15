@@ -15,7 +15,7 @@
           </sui-form-field>
           <sui-form-field>
             <label>Capacidad de asistentes:</label>
-            <input type="number" v-model="conference.quota" />
+            <input type="number" v-model="conference.quota.capacity" />
           </sui-form-field>
           <sui-form-field>
             <label>Fecha de conferencia:</label>
@@ -45,8 +45,10 @@
                     <sui-item-description>{{conference.description}}.</sui-item-description>
                     <div class="ui divider"></div>
                     <sui-item-extra>
-                      <span>Conferencia # {{ idx+1 }}</span> - Capacidad: <b>{{conference.quota}}</b><br>
+                      <span>Conferencia # {{ idx+1 }}</span><br>
+                      Capacidad: <b>{{conference.quota.capacity}}</b><small>asistentes</small><br>
                       Fecha: <b>{{format_date(conference.date)}}</b><br>
+                      Lugar: <b>{{conference.location}}</b><br>
                     </sui-item-extra>
                   </sui-item-content>
                   <sui-card-content extra>

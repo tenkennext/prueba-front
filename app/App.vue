@@ -32,7 +32,7 @@
           is="sui-menu-item"
           :active="isActive(true)"
           content="Salir"
-          @click="select('Logout')"
+          @click="logout()"
         />
       </sui-menu-menu>
     </sui-menu>
@@ -98,6 +98,14 @@ export default {
          this.active = false;
          this.isActive();
        }
+    },
+    logout(){
+      this.user = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('email');
+      localStorage.removeItem('name');
+      localStorage.removeItem('role');
+      window.location.href = '/';
     },
     isActive() {
       //console.log('IsActive? '+this.active);

@@ -1,6 +1,16 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const quotaSchema = new Schema({
+  capacity: {
+    type: Number
+  },
+  remain: {
+    type: Number
+  },
+  subscribers: { type : Array }
+});
+
 const Conference = new Schema({
   title: String,
   description: String,
@@ -9,7 +19,7 @@ const Conference = new Schema({
       type: Date,
       default: Date.now
   },
-  quota: Number,
+  quota: quotaSchema,
   owner: Object,
   state: {
       type: Boolean,

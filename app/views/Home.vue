@@ -1,6 +1,6 @@
 <template>
    <sui-container fluid text>
-    <sui-container>
+    <sui-container v-if="isLogedIn == false">
       <div class="ui section divider"></div>
       <h2 is="sui-header" icon text-align="center">
         <sui-icon name="power off" circular />
@@ -38,11 +38,11 @@
         </sui-message>
       </div>
     </sui-form>
-    <sui-message v-if="!successful">
+    <sui-message v-if="!successful && isLogedIn == false">
       <sui-message-header>Nuevo?</sui-message-header>
       <sui-message-list>
         <sui-message-item>
-          Registarse para ingresar  <router-link to="/register">aquí</router-link>
+          Registrarse para ingresar  <router-link to="/register">aquí</router-link>
         </sui-message-item>
       </sui-message-list>
     </sui-message>
@@ -55,11 +55,24 @@
         <sui-message-item>
           Sera redireccionado en un momento
         </sui-message-item>
-        <sui-message-item>
-          Para crear conferencias <router-link to="/add_conference">click aqui</router-link>
+        <sui-message-item v-if="user.role === 'speaker'">
+          Para crear conferencias <a href="/add_conference">click aqui</a>
+        </sui-message-item>
+        <sui-message-item v-if="user.role === 'attendant'">
+          Para inscribirse a conferencias <a href="/conferences">click aqui</a>
         </sui-message-item>
       </sui-message-list>
     </sui-message>
+    <sui-message v-if="isLogedIn">
+      <sui-message-header>Usted esta logueado!</sui-message-header>
+      <sui-message-list>
+        <sui-message-item>
+          Para ver sus conferencias <router-link to="/my_conferences">clcik aquí</router-link>
+        </sui-message-item>
+      </sui-message-list>
+    </sui-message>
+
+    
 
   </sui-container>
 </template>
@@ -122,12 +135,14 @@ export default {
             console.log(data);
             if(data.error){
               this.message = data.error;
+              console.log('erro');
             }else{
               console.log('logedin');
               /**this.token = data.token;**/
               this.message = data.user.message;
               console.log('mess '+this.message);
               this.successful = true;
+              this.isLogedIn = true;
               this.user = new User();
               this.user.token = data.user.token;
               this.user.role = data.user.role;
@@ -137,14 +152,15 @@ export default {
               localStorage.setItem('email', data.user.email);
               localStorage.setItem('role', data.user.role);
               //commit('setToken', data.user.token)
-              const userLoged = data.json();
-              console.log(userLoged);
-              //Redrirect
+              console.log('rre');
+              //Redirect
               window.setTimeout( function(){
                   window.location = "/my_conferences";
-              }, 4500 );
+              }, 5000 );
+             
             }
-            
+             
+              
           })
           .catch((err) => {
             if(err){

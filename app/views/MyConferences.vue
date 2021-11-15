@@ -10,9 +10,9 @@
       </sui-container>
       <sui-container>
         <sui-item-group>
-          
+          <div class="ui section hidden"><br></div>
           <sui-item v-for="(conference, idx) in conferences" :key="idx">
-            <div class="" v-if="conference.state === true">
+            <!--div class="" v-if="conference.state === true"-->
               <sui-card>
                 <sui-card-content>
                     <sui-item-content>
@@ -20,14 +20,16 @@
                       <sui-item-description>{{conference.description}}.</sui-item-description>
                       <div class="ui divider"></div>
                       <sui-item-extra>
-                        <span>Conferencia # {{ idx+1 }}</span> - Capacidad: <b>{{conference.quota}}</b><br>
+                        <span>Conferencia # {{ idx+1 }}</span><br>
+                        Capacidad: <b>{{conference.quota.capacity}}</b><small>asistentes</small><br>
                         Fecha: <b>{{format_date(conference.date)}}</b><br>
+                        Lugar: <b>{{conference.location}}</b><br>
                       </sui-item-extra>
                     </sui-item-content>
                 </sui-card-content>
                 <sui-button attached="bottom" v-if="role === 'speaker'"
                     toggle negative
-                    content="Desactivar"
+                    :content="textbtn"
                     :active="!conference.state" 
                     @click="inactivateConference(conference)">
                     <!--@click="isActive = !isActive"-->
@@ -36,12 +38,12 @@
                 <sui-button attached="bottom" v-if="role === 'attendant'"
                     toggle
                     content="Desinscribirse"
-                    :active="conference.state" 
+                    :active=" conference.state ? 'Desactivar' : conference.state" 
                     @click="unSubscribeConference(conference._id)">
                     <sui-icon name="close" />
                 </sui-button>
               </sui-card>
-            </div>
+            <!--/div-->
           </sui-item>
          
         </sui-item-group>
@@ -64,13 +66,17 @@ export default {
       conferenceToDisable: '',
       owner: new User(),
       activated : false,
+      textbtn: 'Activar',
       role: '',
     }
   },
   mounted(){
     this.createOwner();
     this.role = this.isRole();
-    this.getConferences();
+    if(this.role === 'speaker'){
+      this.getConferences();
+    }
+    
   },
   methods: {
     getConferences() {
@@ -101,15 +107,9 @@ export default {
 
       this.actived = !conference.state;
       this.conference = conference;
+      this.actived ? this.textbtn = 'Desactivar' :  this.textbtn = 'Activar'; 
 
       fetch('http://localhost:3001/api/conference/disable/' + conference._id + '/state/' + this.actived, {
-        /*method: 'POST',
-        mode: 'cors',
-        body: JSON.stringify({id: conference, state: this.isActive}),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },*/
       })
         .then(res => res.json())
         .then(data => {

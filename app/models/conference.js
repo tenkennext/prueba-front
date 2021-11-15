@@ -1,10 +1,14 @@
-export default class User {
-  constructor(title = '', description = '', location = '', date = '', quota = '', owner) {
+export default class Conference {
+  constructor(title = '', description = '', location = '', date = '', quota = { capacity:'', remain: '', subscribers: Array }, owner) {
     this.title = title;
     this.description = description;
     this.location = location;
     this.date = date;
-    this.quota = quota;
+    this.quota = {
+        capacity : quota.capacity,
+        remain : quota.remain,
+        subscribers : quota.subscribers,
+    };
     this.owner = owner;
   }
 }

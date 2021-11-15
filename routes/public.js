@@ -1,45 +1,3 @@
-
-/*import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-
-import store from '../store'
-
-const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/conferences',
-    name: 'Conferences',
-    component: () => import(webpackChunkName: "about", '../views/Conferences.vue'),
-    meta: {requireAuth: true}
-  }
-]
-
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
-})
-
-router.beforeEach((to, from, next) => {
-  const rutaProtegida = to.matched.some(record => record.meta.requireAuth);
-
-    if(rutaProtegida && store.state.token === null){
-        // ruta protegida es true
-        // token es nulo true, por ende redirigimos al inicio
-        next({name: 'Home'})
-    }else{
-        // En caso contrario sigue...
-        next()
-    }
-
-})
-
-export default router*/
-
-
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -76,6 +34,22 @@ router.get('/api/conference/disable/:id/state/:status', async (req, res) => {
   await Conferences.findByIdAndUpdate(req.params.id, { state: req.params.status });
   res.json({
     status: 'Conference disabled'
+  });
+  
+});
+
+router.post('/api/conference/subscribe/', async (req, res) => {
+  const idConf = req.body.conference._id;
+  const user = User.findOne({ email: req.body.user.email });
+  const conference = Conferences.findOne({ _id:idConf});
+  console.log(conference);
+  return; 
+  const remains = conference.quota.capacity - 1;
+  const quota = { capacity: conference.quota.capacity, remain: remains, subscribers: user };
+  await Conferences.findByIdAndUpdate(req.body.conference._id, { quota: quota });
+  console.log('await');
+  res.json({
+    status: 'Subscribed to Conference'
   });
   
 });
