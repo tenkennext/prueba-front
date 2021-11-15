@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Conferences from './views/Conferences.vue';
 import AddConference from './views/AddConference.vue';
+import MyConferences from './views/MyConferences.vue';
 import Register from './views/Register.vue';
 //export default router
 //import Login from './views/Login.vue';
@@ -31,12 +32,12 @@ export const router = new Router({
       component: Conferences
     },
     {
-      path: '/account/add_conference',
+      path: '/add_conference',
       component: AddConference
     },
     {
-      path: '/account/conferences',
-      component: Conferences
+      path: '/my_conferences',
+      component: MyConferences
     }
     /*{
       path: '/login',

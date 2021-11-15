@@ -16,7 +16,6 @@
             v-model="user.name"
             v-validate="'required|min:3|max:20'"
             type="text"
-            class="form-control"
             name="name"
           placeholder="Nombre" />
           <sui-message v-if="submitted && errors.has('name')">
@@ -27,7 +26,6 @@
           <label>Correo eléctronico:</label>
           <input type="email" v-model="user.email"
                 v-validate="'required|email|max:50'"
-                class="form-control"
                 name="email"
                 placeholder="Email"  />
           <sui-message v-if="submitted && errors.has('email')">
@@ -38,7 +36,6 @@
           <label>Password:</label>
           <input type="password" v-model="user.password"
                 v-validate="'required|min:6|max:40'"
-                class="form-control"
                 name="password" />
             <sui-message v-if="submitted && errors.has('password')">
               <sui-message-header>{{errors.first('password')}}</sui-message-header>

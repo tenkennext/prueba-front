@@ -10,6 +10,7 @@ const Conference = new Schema({
       default: Date.now
   },
   quota: Number,
+  owner: Object,
   state: {
       type: Boolean,
       default: true

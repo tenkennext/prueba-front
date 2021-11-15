@@ -113,15 +113,15 @@ router.post('/login', async (req, res) => {
 
   // create token
   const token = jwt.sign({
-      //name: user.name,
+      name: user.name,
       email: user.email,
+      role: user.role,
       id: user._id
   }, process.env.TOKEN_SECRET)
 
   res.header('auth-token', token).json({
       error: null,
-      data: {'token': token, 'mesagge' : 'Bienvenido!'},
-      
+      user: {'token': token, 'name': user.name, 'email': user.email, 'role': user.role, 'message' : 'Bienvenido! ' + user.name },
   })
 })
 

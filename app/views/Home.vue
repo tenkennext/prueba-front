@@ -8,7 +8,7 @@
       </h2>
     </sui-container>
     <div class="ui hidden divider"></div>
-    <sui-form @submit.prevent="handleLogin()">
+    <sui-form @submit.prevent="handleLogin()" v-if="!isLogedIn">
       <div v-if="!successful">
         <sui-form-field>
           <label>Correo eléctronico:</label>
@@ -32,14 +32,13 @@
         </sui-form-field>
         <!-- @click="sendConference()"-->
         <sui-button>Iniciar</sui-button>
-        <div
-          v-if="message"
-          class="alert"
-          :class="successful ? 'alert-success' : 'alert-danger'"
-        >{{message}}</div>
+        <sui-message v-if="message">
+          <!--:class="successful ? 'success' : 'danger'"-->
+          <sui-message-header>{{message}}</sui-message-header>
+        </sui-message>
       </div>
     </sui-form>
-    <sui-message>
+    <sui-message v-if="!successful">
       <sui-message-header>Nuevo?</sui-message-header>
       <sui-message-list>
         <sui-message-item>
@@ -47,29 +46,30 @@
         </sui-message-item>
       </sui-message-list>
     </sui-message>
+    <sui-message v-if="message && successful">
+      <sui-message-header>{{message}}</sui-message-header>
+      <sui-message-list>
+        <sui-message-item>
+          Ha ingresado con rol de <b>{{user.role}}</b>
+        </sui-message-item>
+        <sui-message-item>
+          Sera redireccionado en un momento
+        </sui-message-item>
+        <sui-message-item>
+          Para crear conferencias <router-link to="/add_conference">click aqui</router-link>
+        </sui-message-item>
+      </sui-message-list>
+    </sui-message>
+
   </sui-container>
 </template>
 
 <script>
-/*import {mapActions} from 'vuex'
-export default {
-  data() {
-    return {
-      usuario: {
-        email: 'prueba3@prueba.com',
-        password: '123123'
-      }
-    }
-  },
-  methods: {
-    ...mapActions(['login'])
-  }
-}*/
 
 class User {
   constructor(email = '', password = '') {
-    this.email = email;
-    this.password = password;
+    this.email = email,
+    this.password = password
   }
 }
 
@@ -83,6 +83,7 @@ export default {
   data: () => {
     return {
       user: new User(),
+      isLogedIn: Boolean, 
       password: "",
       email: "",
       submitted: false,
@@ -97,6 +98,9 @@ export default {
     setToken(state, payload){
       state.token = payload
     }
+  },
+  created(){
+    this.getToken();
   },
   methods: {
     ...mapMutations(["setUser", "setToken"]),
@@ -116,36 +120,37 @@ export default {
           .then(res => res.json())
           .then(data => {
             console.log(data);
-            this.user = new User();
-          })
-          .then((res) => {
-            const userLoged = res.data.json();
-            console.log(userLoged);
-            //this.user = userLoged;
-            commit('setToken', res.data.token)
-            localStorage.setItem('token', res.data.token)
+            if(data.error){
+              this.message = data.error;
+            }else{
+              console.log('logedin');
+              /**this.token = data.token;**/
+              this.message = data.user.message;
+              console.log('mess '+this.message);
+              this.successful = true;
+              this.user = new User();
+              this.user.token = data.user.token;
+              this.user.role = data.user.role;
+              
+              localStorage.setItem('token', data.user.token);
+              localStorage.setItem('name', data.user.name);
+              localStorage.setItem('email', data.user.email);
+              localStorage.setItem('role', data.user.role);
+              //commit('setToken', data.user.token)
+              const userLoged = data.json();
+              console.log(userLoged);
+              //Redrirect
+              window.setTimeout( function(){
+                  window.location = "/my_conferences";
+              }, 4500 );
+            }
+            
           })
           .catch((err) => {
             if(err){
                console.log('Error: ', err);
             }
           });
-        /*try {
-          const res = await fetch('http://localhost:3001/api/user/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-          })
-          const userDB = await res.json()
-          console.log(userDB);
-          this.user = userDB;
-          //commit('setToken', userDB.data.token)
-          localStorage.setItem('token', userDB.data.token)
-        } catch (error) {
-          console.log('Error: ', error)
-        }*/
     },
     handleLogin() {
       this.message = '';
@@ -153,14 +158,18 @@ export default {
       this.$validator.validate().then(isValid => {
         if (isValid) {
           this.login(this.user);
+        }else{
+          return false;
         }
       });
     },
-    getToken({ commit }) {
+    getToken(/*{ commit }*/) {
       if (localStorage.getItem('token')) {
-        commit('setToken', localStorage.getItem('token'))
+        this.isLogedIn = true;
+        //commit('setToken', localStorage.getItem('token'))
       } else {
-        commit('setToken', null)
+        this.isLogedIn = false;
+        //commit('setToken', null)
       }
     }
   }

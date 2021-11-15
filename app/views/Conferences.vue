@@ -48,7 +48,7 @@
                   toggle
                   content="Activar"
                   :active="isActive" 
-                  @click="inactivateConference(conference._id)">
+                  >
                   <!--@click="isActive = !isActive"-->
                   <sui-icon name="close" /> Activar
                 </sui-button>
@@ -91,7 +91,7 @@ export default {
   },
   methods: {
     getConferences() {
-      fetch('http://localhost:3001/api/conferences/list',{
+      fetch('http://localhost:3001/api/conferences',{
         headers : { 
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -104,24 +104,6 @@ export default {
         .then(res  => {
           this.conferences = res;          
           console.log(this.conferences);
-        });
-    },
-    inactivateConference(conferenceId) {
-
-      this.isActive = !this.isActive;
-
-      fetch('http://localhost:3001/api/conference/disable/' + conferenceId, {
-        method: 'UPDATE',
-        mode: 'cors',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(this.conference.state = this.isActive),
-      })
-        .then(res => res.json())
-        .then(data => {
-          this.getConferences();
         });
     },
     format_date(value){

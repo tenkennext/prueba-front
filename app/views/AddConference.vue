@@ -72,15 +72,8 @@
 
 <script>
 
-class Conference {
-  constructor(title = '', description = '', location = '', date = '', quota = '') {
-    this.title = title;
-    this.description = description;
-    this.location = location;
-    this.date = date;
-    this.quota = quota;
-  }
-}
+import User from '../models/user';
+import Conference from '../models/conference';
 
 export default {
   name: 'AddConference',
@@ -88,14 +81,18 @@ export default {
     return {
       conference: new Conference(),
       conferences: [],
-      conferenceToEdit: ''
+      conferenceToDisable: '',
+      owner: new User(), 
     }
   },
   mounted(){
+    this.createOwner();
     this.getConferences();
   },
   methods: {
     sendConference() {
+      this.conference.owner = this.owner.email;
+
         fetch('http://localhost:3001/api/conference/add', {
           method: 'POST',
           mode: 'cors',
@@ -114,7 +111,7 @@ export default {
           });
     },
     getConferences() {
-      fetch('http://localhost:3001/api/conferences/list',{
+      fetch('http://localhost:3001/api/conferences/mylist/' + this.owner.email ,{
         headers : { 
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -134,7 +131,10 @@ export default {
           return new Date(value).toLocaleDateString();
         }
     },
-  
+    createOwner(){
+      this.owner.email = localStorage.getItem('email');
+      console.log('owner is ', this.owner.email )
+    }
   }
 };
 </script>
