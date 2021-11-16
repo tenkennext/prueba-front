@@ -138,9 +138,8 @@ export default {
               console.log('erro');
             }else{
               console.log('logedin');
-              /**this.token = data.token;**/
               this.message = data.user.message;
-              console.log('mess '+this.message);
+              console.log('messa '+this.message);
               this.successful = true;
               this.isLogedIn = true;
               this.user = new User();

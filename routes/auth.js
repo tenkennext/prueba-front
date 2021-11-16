@@ -64,14 +64,14 @@ const schemaLogin = Joi.object({
 
 router.post('/register', async (req, res) => {
 
-   // validate user
+   // validar user
    const { error } = schemaRegister.validate(req.body)
     
    if (error) {
        return res.status(400).json({error: error.details[0].message})
    }
 
-   // check email exist
+   // validar email existe
    const isEmailExist = await User.findOne({ email: req.body.email });
 
    if (isEmailExist) {
@@ -111,7 +111,7 @@ router.post('/login', async (req, res) => {
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
 
-  // create token
+  // crear token
   const token = jwt.sign({
       name: user.name,
       email: user.email,
@@ -119,6 +119,7 @@ router.post('/login', async (req, res) => {
       id: user._id
   }, process.env.TOKEN_SECRET)
 
+  //user logedin
   res.header('auth-token', token).json({
       error: null,
       user: {'token': token, 'name': user.name, 'email': user.email, 'role': user.role, 'message' : 'Bienvenido! ' + user.name },

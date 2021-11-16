@@ -39,7 +39,7 @@ mongoose.connect(uri,
 app.get('/', (req, res) => {
     res.json({
         estado: true,
-        mensaje: 'funciona!'
+        mensaje: 'Ruta Ok!'
     })
 });
 
@@ -50,5 +50,5 @@ app.use(history());
 // iniciar server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-    console.log(`servidor andando en: ${PORT}`)
+    console.log(`servidor en: ${PORT}`)
 })

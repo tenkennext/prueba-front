@@ -45,7 +45,7 @@
           <sui-header-subheader>{{ user.name }}</sui-header-subheader>
         </sui-header-content>
       </h3>
-      <p>{{$store.state.token}}</p>
+      <!--p>{{$store.state.token}}</p-->
     </template>
 
     <router-view></router-view>

@@ -52,7 +52,6 @@
             />
           </sui-form-field>
         </sui-form-field>
-        <!-- @click="sendConference()"-->
         <sui-button>Crear</sui-button>
         <sui-message v-if="message" :class="successful ? 'success' : 'danger'">
               <sui-message-header>{{message}}</sui-message-header>
@@ -102,7 +101,7 @@ export default {
   },
   mounted() {
     if (this.loggedIn) {
-      this.$router.push('/profile');
+      this.$router.push('/my_conferences');
     }
   },*/
   methods: {

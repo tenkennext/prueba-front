@@ -53,7 +53,7 @@
                   </sui-item-content>
                   <sui-card-content extra>
                     <span slot="right">
-                      <small><b>Speaker:</b></small> <!--{{ conference.quota}}-->
+                      <small><b>Speaker:</b></small> 
                       <sui-image
                         src="https://i.pravatar.cc/150"
                         shape="circular"
